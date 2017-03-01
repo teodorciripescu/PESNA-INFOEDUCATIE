@@ -1,0 +1,59 @@
+
+enemy.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+eattack0
+  rotate: false
+  xy: 1, 621
+  size: 394, 368
+  orig: 394, 368
+  offset: 0, 0
+  index: -1
+eattack2
+  rotate: false
+  xy: 397, 696
+  size: 483, 293
+  orig: 483, 293
+  offset: 0, 0
+  index: -1
+eattack1
+  rotate: false
+  xy: 397, 344
+  size: 400, 350
+  orig: 400, 350
+  offset: 0, 0
+  index: -1
+eidle0
+  rotate: false
+  xy: 1, 248
+  size: 315, 371
+  orig: 315, 371
+  offset: 0, 0
+  index: -1
+erun1
+  rotate: false
+  xy: 318, 1
+  size: 333, 341
+  orig: 333, 341
+  offset: 0, 0
+  index: -1
+erun2
+  rotate: false
+  xy: 653, 10
+  size: 321, 332
+  orig: 321, 332
+  offset: 0, 0
+  index: -1
+
+enemy2.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+erun0
+  rotate: false
+  xy: 1, 1
+  size: 296, 333
+  orig: 296, 333
+  offset: 0, 0
+  index: -1

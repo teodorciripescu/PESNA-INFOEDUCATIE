@@ -1,0 +1,54 @@
+
+horse.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+hattack2
+  rotate: false
+  xy: 1, 722
+  size: 348, 259
+  orig: 348, 259
+  offset: 0, 0
+  index: -1
+hwalk1
+  rotate: false
+  xy: 351, 739
+  size: 351, 242
+  orig: 351, 242
+  offset: 0, 0
+  index: -1
+hwalk0
+  rotate: false
+  xy: 704, 739
+  size: 319, 242
+  orig: 319, 242
+  offset: 0, 0
+  index: -1
+hattack0
+  rotate: false
+  xy: 1, 484
+  size: 348, 236
+  orig: 348, 236
+  offset: 0, 0
+  index: -1
+hattack1
+  rotate: false
+  xy: 351, 502
+  size: 348, 235
+  orig: 348, 235
+  offset: 0, 0
+  index: -1
+hwalk2
+  rotate: false
+  xy: 1, 240
+  size: 341, 242
+  orig: 341, 242
+  offset: 0, 0
+  index: -1
+hstay0
+  rotate: false
+  xy: 1, 1
+  size: 305, 237
+  orig: 305, 237
+  offset: 0, 0
+  index: -1
