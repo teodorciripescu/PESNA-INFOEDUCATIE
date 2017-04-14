@@ -1,7 +1,12 @@
 package com.pesna.init;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
+import com.brashmonkey.spriter.SCMLReader;
 import com.pesna.Main;
+import com.pesna.spriter.LibGdx.LibGdxDrawer;
+import com.pesna.spriter.LibGdx.LibGdxLoader;
 
 public class GameRegistry {
 	private final Main reference;
@@ -31,6 +36,12 @@ public class GameRegistry {
 		reference.assetManager.load("menu/settings1.png" , Texture.class);
 		reference.assetManager.load("menu/backgr.png" , Texture.class);
 
+		reference.assetManager.load( "menu.png", Texture.class );
+		reference.assetManager.load( "buttons.png", Texture.class );
+
+		reference.assetManager.load ( "items/arrow.png", Texture.class );
+
+		loadSpriterInfo();
 	}
 	public void onAssetsLoaded( Main reference )
 	{
@@ -42,6 +53,40 @@ public class GameRegistry {
 		//At last
 		reference.screenManager.onAssetsLoaded( reference );
 	}
-	
-	
+
+
+	public com.brashmonkey.spriter.Data werewolfData;
+	public LibGdxLoader werewolfLoader;
+
+	public com.brashmonkey.spriter.Data pesnaIdleData;
+	public LibGdxLoader pesnaIdleLoader;
+
+	public com.brashmonkey.spriter.Data pesnaMoveData;
+	public LibGdxLoader pesnaMoveLoader;
+
+	private void loadSpriterInfo()
+	{
+		//"harapalb/2dshit.scml"
+		//"werewolf/Mircea.json.scml"
+		//"martinica/martinica.scml"
+		FileHandle handle = Gdx.files.internal("lucifer/NewProject.autosave.scml");
+		werewolfData = new SCMLReader( handle.read() ).getData();
+		werewolfLoader = new LibGdxLoader(werewolfData);
+		werewolfLoader.load(handle.file());
+		reference.werewolfDrawer = new LibGdxDrawer(werewolfLoader, reference.batch, reference.shapeRenderer);
+
+		//handle = Gdx.files.internal( "harapalbb/harapalbb.scml" );
+		handle = Gdx.files.internal( "resized-shot/resized-shot.scml" );
+		pesnaIdleData = new SCMLReader( handle.read() ).getData();
+		pesnaIdleLoader = new LibGdxLoader( pesnaIdleData );
+		pesnaIdleLoader.load(handle.file());
+		reference.pesnaIdleDrawer = new LibGdxDrawer( pesnaIdleLoader, reference.batch, reference.shapeRenderer );
+
+		//handle = Gdx.files.internal( "harapalbb/harapalbb.scml" );
+		handle = Gdx.files.internal( "harapalbb/harapalbb.scml" );
+		pesnaMoveData = new SCMLReader( handle.read() ).getData();
+		pesnaMoveLoader = new LibGdxLoader( pesnaMoveData );
+		pesnaMoveLoader.load(handle.file());
+		reference.pesnaMoveDrawer = new LibGdxDrawer( pesnaMoveLoader, reference.batch, reference.shapeRenderer );
+	}
 }

@@ -1,16 +1,16 @@
 package com.pesna.screens;
 
-import com.pesna.entities.EnemyObject;
-import com.pesna.levels.ForestLevel;
-import com.pesna.levels.Spawner;
-import java.util.ArrayList;
-import java.util.ConcurrentModificationException;
-
 import com.pesna.Main;
 import com.pesna.abstracts.SpellObject;
+import com.pesna.entities.EnemyObject;
+import com.pesna.entities.Bear;
 import com.pesna.gui.GuiObject;
+import com.pesna.levels.Spawner;
 import com.pesna.objects.LevelRenderer;
 import com.pesna.objects.ScreenObject;
+
+import java.util.ArrayList;
+import java.util.ConcurrentModificationException;
 import java.util.LinkedList;
 
 public class GameScreen implements IScreen {
@@ -28,8 +28,6 @@ public class GameScreen implements IScreen {
 	
 	public GameScreen( Main _reference )
 	{
-
-
 		player = _reference.player;
 		levelRenderer = new LevelRenderer( _reference );
 
@@ -40,6 +38,7 @@ public class GameScreen implements IScreen {
 		for (EnemyObject enemyObject : enemyList) {
 			objects.add(enemyObject);
 		}
+		objects.add(new Bear(_reference , 500,0));
 
 		//objects.add(levelRenderer.)
 	}

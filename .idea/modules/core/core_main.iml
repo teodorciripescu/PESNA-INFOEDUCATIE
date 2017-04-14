@@ -11,5 +11,7 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="Gradle: com.badlogicgames.gdx:gdx:1.9.4" level="project" />
     <orderEntry type="library" name="Gradle: com.badlogicgames.gdx:gdx-box2d:1.9.4" level="project" />
+    <orderEntry type="library" name="spriter-1.0 (2)" level="project" />
+    <orderEntry type="library" name="core-1.0" level="project" />
   </component>
 </module>

@@ -6,9 +6,8 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.pesna.Main;
 import com.pesna.dialog.DialogBuilder;
@@ -16,8 +15,9 @@ import com.pesna.entities.EnemyObject;
 import com.pesna.objects.ScreenObject;
 import com.pesna.objects.SimpleLabel;
 import com.pesna.objects.SimpleTimer;
-import java.io.IOException;
 import com.pesna.talentInterface.TalentsTree;
+
+import java.io.IOException;
 
 public class Player implements ScreenObject {
 
@@ -34,10 +34,16 @@ public class Player implements ScreenObject {
 
 	public int Level = 1 , Experience =  0 , LevelCapExperience = 1800;
 
-	public float ARMOR = 0 , DAMAGE = 100 , SPEED = 300 , ATTACK_SPEED = 0.75f , HP , maxHP = 150;
+	public float ARMOR = 0 , DAMAGE = 100 , SPEED = 400 , ATTACK_SPEED = 0.75f , HP , maxHP = 150;
 
 	protected final float gravity = 0.9f;
 	protected float vspeed = 0;
+
+	public com.brashmonkey.spriter.Player pesnaPlayer;
+	private com.brashmonkey.spriter.Player idlePlayer, movePlayer;
+	SpriterAnimationHandler spriterAnimation;
+
+	private int updateSkip = 0;
 
 	private DialogBuilder dialogBuilder;
 	public Player( Main _reference ) throws IOException {
@@ -66,33 +72,88 @@ public class Player implements ScreenObject {
 		lvlLabel = new SimpleLabel(_reference);
 		lvlLabel.SetColor(Color.YELLOW);
 
+		idlePlayer = new com.brashmonkey.spriter.Player ( reference.gameRegistry.pesnaIdleData.getEntity(0 ) );
+		movePlayer = new com.brashmonkey.spriter.Player ( reference.gameRegistry.pesnaMoveData.getEntity(0 ) );
+
+		pesnaPlayer = idlePlayer;
+
+		//pesnaPlayer = new com.brashmonkey.spriter.Player ( reference.gameRegistry.pesnaIdleData.getEntity(0 ) );
+
+		//pesnaPlayer.setAnimation ( reference.gameRegistry.pesnaData.getEntity(1).getAnimation(1));
+		//pesnaPlayer.setEntity( reference.gameRegistry.pesnaData.getEntity(0));
+
+		//pesnaPlayer.speed = 1;
+	}
+
+	public void setAnimation( SpriterAnimationHandler animation )
+	{
+		this.spriterAnimation = animation;
+		if ( animation.mainLoader ) {
+			movePlayer.setEntity(reference.gameRegistry.pesnaMoveData.getEntity(animation.entityID));
+			pesnaPlayer = movePlayer;
+		}
+		else {
+			idlePlayer.setEntity(reference.gameRegistry.pesnaIdleData.getEntity(animation.entityID));
+			pesnaPlayer = idlePlayer;
+		}
+
+		com.brashmonkey.spriter.Animation newAnimation = pesnaPlayer.getEntity().getAnimation( animation.animationID );
+		if ( newAnimation != pesnaPlayer.getAnimation() ) {
+			pesnaPlayer.setAnimation(pesnaPlayer.getEntity().getAnimation(animation.animationID));
+			pesnaPlayer.setTime( 0 );
+		}
+		else
+			pesnaPlayer.setAnimation(pesnaPlayer.getEntity().getAnimation(animation.animationID));
+
+		pesnaPlayer.speed = animation.animationSpeed;
 	}
 
 	@Override
 	public void draw( Main _reference )
 	{
-    SpriteBatch batch = _reference.batch;
-    drawPlayerObjects();
-		delta+= Gdx.graphics.getDeltaTime();
-		TextureRegion keyFrame = animation.getKeyFrame(delta,true);
-		batch.begin();
+    	drawPlayerObjects();
 
-		if ( flip )
-			batch.draw( keyFrame, x+keyFrame.getRegionWidth()/2, y, -keyFrame.getRegionWidth(), keyFrame.getRegionHeight());
+		float cameraScale = spriterAnimation.projectionScale;
+		float reverseScale = 1f/cameraScale;
+
+		pesnaPlayer.setPosition(x*reverseScale,(y+spriterAnimation.yOffset)*reverseScale);
+
+		if ( spriterAnimation == SpriterAnimationHandler.idle ) {
+			if (updateSkip >= 2) {
+				pesnaPlayer.speed = 1;
+				updateSkip = 0;
+			} else
+				pesnaPlayer.speed = 0;
+		}
 		else
-			batch.draw( keyFrame, x-keyFrame.getRegionWidth()/2, y, keyFrame.getRegionWidth(), keyFrame.getRegionHeight());
-		//batch.draw( region, x, y);
-		batch.end();
+			pesnaPlayer.speed = 1;
+
+		pesnaPlayer.update();
+
+		updateSkip++;
+
+		if ( pesnaPlayer.flippedX() == 1 && flip == true )
+			pesnaPlayer.flipX();
+		if ( pesnaPlayer.flippedX() == -1 && flip == false )
+			pesnaPlayer.flipX();
+
+		Matrix4 cameracombined = _reference.camera.combined;
+		_reference.batch.setProjectionMatrix( cameracombined.scale(cameraScale,cameraScale,1f) );
+		_reference.batch.begin();
+		if ( spriterAnimation.mainLoader )
+			_reference.pesnaMoveDrawer.draw(pesnaPlayer);
+		else
+			_reference.pesnaIdleDrawer.draw(pesnaPlayer);
+		_reference.batch.end();
+		_reference.batch.setProjectionMatrix( cameracombined.scale(reverseScale,reverseScale,1f) );
 	}
 
 	@Override
 	public void update( Main _reference )
 	{
-
-
 		//Control
-    CheckDead();
-    Regen();
+    	CheckDead();
+		Regen();
 		control();
 		Timer(ATTACK_SPEED);
 		useBlock();
@@ -108,20 +169,24 @@ public class Player implements ScreenObject {
 
 	private void control()
 	{
-		animation = reference.gameRegistry.animationManager.hstay;
+		//animation = reference.gameRegistry.animationManager.hstay;
 		dialogBuilder.Start();
+
+		setAnimation( SpriterAnimationHandler.idle );
+
 		if ( Gdx.input.isKeyPressed(Keys.A))
 		{
 			x -= SPEED * Gdx.graphics.getDeltaTime();
 			flip = true;
-			animation = reference.gameRegistry.animationManager.hwalk;
+			//animation = reference.gameRegistry.animationManager.hwalk;
+			setAnimation( SpriterAnimationHandler.run );
 		}
-
 		else if ( Gdx.input.isKeyPressed(Keys.D))
 		{
 			x += SPEED * Gdx.graphics.getDeltaTime();
 			flip = false;
-			animation = reference.gameRegistry.animationManager.hwalk;
+			//animation = reference.gameRegistry.animationManager.hwalk;
+			setAnimation( SpriterAnimationHandler.run );
 		}
 
 		if ( Gdx.input.isKeyJustPressed(Keys.SPACE) && y == 0 )
@@ -150,6 +215,7 @@ public class Player implements ScreenObject {
 					}
 					if(auxiliat) {
 						animation = reference.gameRegistry.animationManager.hattack;
+						setAnimation( SpriterAnimationHandler.attack );
 						autoattackTimer.setNewTime(animation.getAnimationDuration() +1.1f);
 						if(autoattackTimer.TimeElapsed())
 						{

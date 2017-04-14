@@ -1,13 +1,12 @@
 package com.pesna.levels;
 
 import com.pesna.Main;
-import com.pesna.abstracts.EnemyStructure;
 import com.pesna.entities.EnemyObject;
 import com.pesna.entities.ForestBoss;
 import com.pesna.objects.ScreenObject;
 import com.pesna.objects.SimpleTimer;
+
 import java.util.ArrayList;
-import java.util.LinkedList;
 
 /**
  * Created by Gagiu on 1/18/2017.

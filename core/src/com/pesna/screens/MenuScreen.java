@@ -1,14 +1,14 @@
 package com.pesna.screens;
 
-import com.pesna.entities.EnemyObject;
-import java.util.ArrayList;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Texture;
 import com.pesna.Main;
+import com.pesna.entities.EnemyObject;
 import com.pesna.gui.GuiButton;
 import com.pesna.objects.ScreenObject;
+
+import java.util.ArrayList;
 import java.util.LinkedList;
 
 public class MenuScreen implements IScreen, InputProcessor {
@@ -17,20 +17,23 @@ public class MenuScreen implements IScreen, InputProcessor {
 	Texture background;
 	
 	Main reference;
+
+	Texture buttonTexture;
 	
 	public MenuScreen( Main _reference )
 	{
 		reference = _reference;
 		Gdx.input.setInputProcessor(this);
 		
-		buttons.add( new GuiButton( _reference, 0, Gdx.graphics.getWidth()*1/8, Gdx.graphics.getHeight()/8 ) );
+		//buttons.add( new GuiButton( _reference, 0, Gdx.graphics.getWidth()/2-300-136, Gdx.graphics.getHeight()/8 ) );
 		//System.out.println( Gdx.graphics.getWidth()*1/2 + "  " + Gdx.graphics.getHeight()/3);
-		buttons.add( new GuiButton( _reference, 1, Gdx.graphics.getWidth()*3/8, Gdx.graphics.getHeight()/8 ) );
-		buttons.add( new GuiButton( _reference, 2, Gdx.graphics.getWidth()*5/8, Gdx.graphics.getHeight()/8 ) );
-		buttons.add( new GuiButton( _reference, 3, Gdx.graphics.getWidth()*7/8, Gdx.graphics.getHeight()/8 ) );
+		//buttons.add( new GuiButton( _reference, 1, Gdx.graphics.getWidth()*3/4-136, Gdx.graphics.getHeight()/8 ) );
+		//buttons.add( new GuiButton( _reference, 2, Gdx.graphics.getWidth()*2/4-136, Gdx.graphics.getHeight()/8 ) );
+		//buttons.add( new GuiButton( _reference, 3, Gdx.graphics.getWidth()/2+300-136, Gdx.graphics.getHeight()/8 ) );
 		
 		
-		background = _reference.assetManager.get( "menu/backgr.png", Texture.class );
+		background = _reference.assetManager.get( "menu.png", Texture.class );
+		buttonTexture = _reference.assetManager.get( "buttons.png", Texture.class );
 	}
 	
 	public void update( Main _reference )
@@ -48,6 +51,7 @@ public class MenuScreen implements IScreen, InputProcessor {
 		_reference.batch.begin();
 		//_reference.batch.draw( background, -Gdx.graphics.getWidth()/2, -Gdx.graphics.getHeight()/2 );
 		_reference.batch.draw( background, 0,0 );
+		_reference.batch.draw( buttonTexture, 0, 0 );
 		for ( ScreenObject object : buttons )
 		{
 			object.draw( _reference );
@@ -92,7 +96,8 @@ public class MenuScreen implements IScreen, InputProcessor {
 		//System.out.println( Integer.toString( Gdx.graphics.getHeight()- screenY) );
 		
 		//System.out.println( "screen" + screenX + " " + screenY );
-		
+
+		/*
 		int clickX = screenX;
 		int clickY = Gdx.graphics.getHeight() - screenY;
 		
@@ -118,7 +123,12 @@ public class MenuScreen implements IScreen, InputProcessor {
 				}
 			}
 		}
-		
+		*/
+		reference.screenManager.queueScreen( reference.screenManager.gameScreen );
+		reference.orthoscale = true;
+		reference.camera.setToOrtho(false,Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
+
+
 		return false;
 	}
 	public boolean touchDragged (int screenX, int screenY, int pointer)
